@@ -9,17 +9,20 @@ class charString
 {
 public:
 	char* line;
+	int length;
+public:
 	charString();
 	charString(string s);
 	charString(char* c);
+	charString(charString& s);
 	char indexOf(int index);
-	charString subString(string s, int index, int length);
-	charString subString(charString s, int index, int length);
-	charString concat(string s1, string s2);
-	charString concat(charString s1, charString s2);
+	int getLength();
+	void subString(int index, int length);
+	void concat(charString s);
+	charString operator = (const charString& s);
 };
 
-class stringList
+class charStringList
 {
 public:
 	charString* list;

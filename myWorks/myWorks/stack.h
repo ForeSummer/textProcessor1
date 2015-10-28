@@ -22,6 +22,7 @@ private:
 	Node *base;
 	Node *top;
 	int stackSize;
+	int stackLength;
 public:
 	Stack();
 	void initStack();

@@ -24,12 +24,18 @@
     <ClCompile Include="charString.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="charStringList.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stack.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="charString.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="charStringList.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

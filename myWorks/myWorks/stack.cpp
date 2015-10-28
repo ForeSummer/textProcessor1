@@ -19,6 +19,7 @@ void Stack::initStack() {
 	if (!this->base)
 		exit(OVERFLOW);
 	this->top = this->base;
+	stackLength = 0;
 	this->stackSize = STACK_SIZE;
 }
 
@@ -26,7 +27,6 @@ void Stack::push(string myData) {
 	if (this->top - this->base >= this->stackSize)
 		return;
 	*this->top ++ = Node(myData);
-	
 }
 
 void Stack::pop() {
@@ -40,5 +40,5 @@ string Stack::getTop() {
 }
 
 int Stack::isEmpty(){
-	return stackSize == 0;
+	return stackLength == 0;
 }
