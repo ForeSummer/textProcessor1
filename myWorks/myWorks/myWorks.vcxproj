@@ -77,13 +77,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="charString.cpp" />
-    <ClCompile Include="charStringList.cpp" />
+    <ClCompile Include="charStringLink.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="music.cpp" />
     <ClCompile Include="stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="charString.h" />
-    <ClInclude Include="charStringList.h" />
+    <ClInclude Include="charStringLink.h" />
+    <ClInclude Include="music.h" />
     <ClInclude Include="stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,42 +1,61 @@
 #include "stack.h"
 
 Node::Node() {
-	next = NULL;
+	this->next = NULL;
 }
-Node::Node(string myData, Node* pointer = NULL) {
-	data = myData;
-	next = pointer;
+
+Node::Node(charString myData, Node* pointer = NULL) {
+	this->data = myData;
+	this->next = pointer;
+}
+
+Node::~Node() {
+	this->next = NULL;
 }
 
 Stack::Stack() {
-	this->stackSize = 0;
+	this->stackLength = 0;
+	this->base = NULL;
+	this->top = NULL;
+}
+
+Stack::~Stack() {
+	this->stackLength = 0;
 	this->base = NULL;
 	this->top = NULL;
 }
 
 void Stack::initStack() {
-	this->base = new Node[STACK_SIZE];
-	if (!this->base)
-		exit(OVERFLOW);
-	this->top = this->base;
-	stackLength = 0;
-	this->stackSize = STACK_SIZE;
+	this->stackLength = 0;
+	this->base = NULL;
+	this->top = NULL;
 }
 
-void Stack::push(string myData) {
-	if (this->top - this->base >= this->stackSize)
-		return;
-	*this->top ++ = Node(myData);
+void Stack::push(Node* n) {
+	if (this->base == NULL) {
+		n->next = NULL;
+		this->base = this->top = n;
+		this->stackLength = 1;
+	}
+	else {
+		n->next = this->top;
+		this->top = n;
+		this->stackLength++;
+	}
 }
 
 void Stack::pop() {
-	if (this->top = this->base)
+	if (this->isEmpty()) {
 		return;
-	*this->top --;
+	}
+	Node* p = this->top;
+	this->top = this->top->next;
+	this->stackLength --;
+	delete p;
 }
 
-string Stack::getTop() {
-	return this->top->data;
+Node* Stack::getTop() {
+	return this->top;
 }
 
 int Stack::isEmpty(){

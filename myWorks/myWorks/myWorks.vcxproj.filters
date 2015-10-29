@@ -24,7 +24,10 @@
     <ClCompile Include="charString.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="charStringList.cpp">
+    <ClCompile Include="music.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="charStringLink.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +38,10 @@
     <ClInclude Include="charString.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="charStringList.h">
+    <ClInclude Include="music.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="charStringLink.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

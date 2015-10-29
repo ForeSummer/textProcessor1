@@ -1,19 +1,19 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <string>
-#include <iostream>
-using namespace std;
+#include "charString.h"
 #define STACK_SIZE 100
 
 
 class Node
 {
 public:
-	string data;
+	charString data;
 	Node* next;
+public:
 	Node();
-	Node(string myData, Node* pointer = NULL);
+	~Node();
+	Node(charString myData, Node* pointer = NULL);
 };
 
 class Stack
@@ -21,14 +21,14 @@ class Stack
 private:
 	Node *base;
 	Node *top;
-	int stackSize;
 	int stackLength;
 public:
 	Stack();
+	~Stack();
 	void initStack();
 	void pop();
-	void push(string myData);
-	string getTop();
+	void push(Node* n);
+	Node* getTop();
 	int isEmpty();
 };
 

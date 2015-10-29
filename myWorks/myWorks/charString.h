@@ -17,15 +17,12 @@ public:
 	charString(charString& s);
 	char indexOf(int index);
 	int getLength();
-	void subString(int index, int length);
-	void concat(charString s);
-	charString operator = (const charString& s);
+	charString subString(int index, int length);
+	charString concat(charString s);
+	bool operator == (charString& s);
+	charString& operator = (const charString& s);
 };
 
-class charStringList
-{
-public:
-	charString* list;
-};
+
 
 #endif
