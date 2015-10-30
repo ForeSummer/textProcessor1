@@ -3,17 +3,27 @@
 
 #include "charString.h"
 
+class charStringNode
+{
+public:
+	charString* data;
+	charStringNode* next;
+public:
+	charStringNode();
+	charStringNode(charString* s);
+	~charStringNode();
+};
+
 class charStringLink
 {
 public:
-	charString* head;
-	charString* tail;
+	charStringNode* head;
+	charStringNode* tail;
 	int length;
 public:
 	charStringLink();
-	void initStringLink();
-	void addString(charString &s);
-	void deleteString(int index);
+	void addStringNode(charString* s);
+	void deleteStringNode(int index);
 	int searchList(charString s);
 };
 

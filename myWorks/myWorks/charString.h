@@ -16,7 +16,7 @@ public:
 	charString(char* c);
 	charString(charString& s);
 	char indexOf(int index);
-	int getLength();
+	string toString();
 	charString subString(int index, int length);
 	charString concat(charString s);
 	bool operator == (charString& s);

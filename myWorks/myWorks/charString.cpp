@@ -34,8 +34,13 @@ char charString::indexOf(int index) {
 	return this->line[index];
 }
 
-int charString::getLength() {
-	return this->length;
+string charString::toString() {
+	string s = "";
+	for (int i = 0; i < this->length; i++)
+	{
+		s = s + this->line[i];
+	}
+	return s;
 }
 
 charString charString::subString(int index, int length) {
