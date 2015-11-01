@@ -2,8 +2,6 @@
 #include <fstream>
 using namespace std;
 
-int matchTable1[10];
-int matchTable2[10];
 
 Song::Song() {}
 
@@ -52,7 +50,7 @@ Song getSongInfo(string filePath) {
 	{
 		getline(inFs,temp);
 		s = charString(temp);
-		if(KMP(&s, &matchString1, matchTable1))	{
+		if(getPart(s, matchString1))	{
 			break;
 		}
 	}
@@ -60,7 +58,7 @@ Song getSongInfo(string filePath) {
 	{
 		getline(inFs,temp);
 		s = charString(temp);
-		if(KMP(&s, &matchString2, matchTable2))	{
+		if(getPart(s, matchString2))	{
 			break;
 		}
 		info.concat(s);
@@ -69,22 +67,22 @@ Song getSongInfo(string filePath) {
 	return mySong;
 }
 
-bool KMP(charString* s, charString* match, int matchTable[]) {
+bool getPart(charString s, charString match) {
 	int sameNum = 0;
-	char ch = match->line[0];
-	for (int i = 0; i < s->length; i ++) {
-		if (ch == s->line[i]) {
+	char ch = match.line[0];
+	int i = 0;
+	while (i < s.length)
+	{
+		if (ch == s.line[i]) {
 			sameNum ++;
-			ch = match->line[sameNum];
+			i++;
 		}
 		else {
-			if (sameNum != 0) {
-				i --;
-				ch = match->line[matchTable[sameNum]];
-				sameNum = matchTable[sameNum];
-			}
+			i = i - sameNum + 1;
+			sameNum = 0;
 		}
-		if (sameNum == match->length) {
+		ch = match.line[sameNum];
+		if (sameNum == match.length) {
 			return true;
 		}
 	}
@@ -94,4 +92,5 @@ bool KMP(charString* s, charString* match, int matchTable[]) {
 Song analyzeInfo(charString s) {
 	Song mySong;
 	int pos = 0;
+	return mySong;
 }

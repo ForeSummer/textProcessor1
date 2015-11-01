@@ -1,4 +1,6 @@
 #include "charString.h"
+#include <iostream>
+using namespace std;
 
 charString::charString() {
 	this->length = 0;
@@ -6,12 +8,14 @@ charString::charString() {
 }
 
 charString::charString(string s) {
-	this->length = strlen(s.c_str);
+	this->length = s.length();
 	this->line = new char[this->length + 1];
-	for (int i = 0; i < length; i++) {
-		this->line[i] = s[i];
+	char* temp = this->line;
+	for (int i = 0; i < this->length; i++) {
+		*temp = s[i];
+		temp ++;
 	}
-	this->line[this->length] = '\0';
+	*temp = '\0';
 }
 
 charString::charString(char* s) {
@@ -22,10 +26,12 @@ charString::charString(char* s) {
 charString::charString(charString& s){
 	this->length = s.length;
 	this->line = new char[this->length + 1];
+	char* temp = this->line;
 	for (int i = 0; i < length; i++) {
-		this->line[i] = s.line[i];
+		*temp = s.line[i];
+		temp ++;
 	}
-	this->line[this->length] = '\0';
+	*temp = '\0';
 }
 
 char charString::indexOf(int index) {
@@ -50,10 +56,12 @@ charString charString::subString(int index, int length) {
 	charString s;
 	s.length = length;
 	s.line = new char[length + 1];
+	char* temp = s.line;
 	for (int i = index; i < index + length; i ++) {
-		s.line[i - index] = this->line[i];
+		*temp = this->line[i];
+		temp ++;
 	}
-	s.line[length] = '\0';
+	*temp = '\0';
 	return s;
 }
 
@@ -61,13 +69,16 @@ charString charString::concat(charString s) {
 	charString result;
 	result.length = this->length + s.length;
 	result.line = new char[result.length + 1];
+	char* temp = result.line;
 	for (int i = 0; i < this->length; i ++) {
-		result.line[i] = this->line[i];
+		*temp = this->line[i];
+		temp ++;
 	}
-	for (int i = this->length; i < this->length + s.length; i++)	{
-		result.line[i] = s.line[i - length];
+	for (int i = 0; i < s.length; i++)	{
+		*temp = s.line[i];
+		temp ++;
 	}
-	result.line[result.length] = '\0';
+	*temp = '\0';
 	return result;
 }
 
@@ -84,8 +95,11 @@ bool charString::operator== (charString& s) {
 }
 charString& charString::operator= (const charString& s) {
 	this->length = s.length;
-	for (int i = 0; i <= this->length; i++) {
-		this->line[i] = s.line[i];
+	this->line = new char[this->length + 1];
+	char* temp = this->line;
+	for (int i = 0; i < this->length + 1; i++) {
+		*temp = s.line[i];
+		temp ++;
 	}
 	return *this;
 }

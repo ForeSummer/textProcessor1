@@ -23,7 +23,7 @@ public:
 
 
 extern Song getSongInfo(string filePath);
-extern bool KMP(charString* s, charString* match, int matchTable[]);
+extern bool getPart(charString s, charString match);
 extern Song analyzeInfo(charString s);
 
 #endif

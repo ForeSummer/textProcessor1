@@ -4,7 +4,7 @@ Node::Node() {
 	this->next = NULL;
 }
 
-Node::Node(charString myData, Node* pointer = NULL) {
+Node::Node(charString myData, Node* pointer) {
 	this->data = myData;
 	this->next = pointer;
 }
