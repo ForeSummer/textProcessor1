@@ -45,7 +45,7 @@ Song& Song::operator = (const Song& s){
 	return *this;
 }
 
-Song getSongInfo(string filePath) {
+Song extractMusicInfoFromPage(string filePath) {
 	ifstream inFs(filePath, ios::in);
 	string match1 = "song_info_area", match2 = "music_list_area";
 	charString matchString1 = charString(match1), matchString2 = charString(match2);
@@ -111,8 +111,8 @@ Song analyzeInfo(charString *s) {
 	int lyriclistStart = 0, lyriclistEnd = 0;
 	int composerStart = 0, composerEnd = 0;
 	int lyricStart = 0, lyricEnd = 0;
-	string div = "div", h2 = "h2", a = "a", ul = "ul", li = "li", script = "script", span = "span", p = "p", textarea = "textarea", lyriclist = "´Ê", composer = "Çú", colonInCN = "£º", none = "#";
-	charString lyriclistString(lyriclist), composerString(composer), colonCNString(colonInCN);
+	string div = "div", h2 = "h2", a = "a", ul = "ul", li = "li", script = "script", span = "span", p = "p", textarea = "textarea", lyriclist = "´Ê", composer = "Çú", colonInCN = "£º", none = "#" , colonInEG = ":";
+	charString lyriclistString(lyriclist), composerString(composer), colonCNString(colonInCN), colonEGString(colonInEG);
 	//cout <<composerString.length<<endl;
 	int pos = 0;
 	while (pos < s->length) {
@@ -319,6 +319,22 @@ Song analyzeInfo(charString *s) {
 			
 		}
 		pos++;
+	}
+	lyriclistStart = mySong.lyrics.indexOf('\n');
+	mySong.lyrics = mySong.lyrics.subString(lyriclistStart + 1, mySong.lyrics.length);
+	charString judge;
+	while (1) {
+		if (mySong.lyricist.line == NULL || mySong.composer.line == NULL) {
+			break;
+		}
+		judge = mySong.lyrics.subString(0, mySong.lyrics.indexOf('\n'));
+		if ((getPart(judge, composerString) || getPart(judge, lyriclistString)) && (getPart(judge, colonCNString) || getPart(judge, colonEGString))) {
+			lyriclistStart = mySong.lyrics.indexOf('\n');
+			mySong.lyrics = mySong.lyrics.subString(lyriclistStart + 1, mySong.lyrics.length);
+		}
+		else {
+			break;
+		}
 	}
 	if (mySong.lyricist.line == NULL) {
 		mySong.lyricist = charString(none);

@@ -15,7 +15,7 @@ public:
 	charString(string s);
 	charString(char* c);
 	charString(charString& s);
-	char indexOf(int index);
+	int indexOf(char ch);
 	string toString();
 	charString subString(int index, int length);
 	charString concat(charString s);

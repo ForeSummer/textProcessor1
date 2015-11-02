@@ -5,8 +5,8 @@ using namespace std;
 #include "stack.h"
 
 int main() {
-	string filePath = "0001.html";
-	Song mySong = getSongInfo(filePath);
+	string filePath = "0010.html";
+	Song mySong = extractMusicInfoFromPage(filePath);
 	mySong.printSongInfo("out.txt");
 	return 0;
 }

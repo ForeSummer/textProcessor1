@@ -22,7 +22,7 @@ public:
 };
 
 
-extern Song getSongInfo(string filePath);
+extern Song extractMusicInfoFromPage(string filePath);
 extern bool getPart(charString s, charString match);
 extern Song analyzeInfo(charString* s);
 

@@ -34,10 +34,18 @@ charString::charString(charString& s){
 	*temp = '\0';
 }
 
-char charString::indexOf(int index) {
-	if (index >= this->length)
+int charString::indexOf(char ch) {
+	int index = 0;
+	while (index < this->length) {
+		if (this->line[index] == ch) {
+			break;
+		}
+		index ++;
+	}
+	if (index == this->length) {
 		return -1;
-	return this->line[index];
+	}
+	return index;
 }
 
 string charString::toString() {
