@@ -13,12 +13,12 @@ public:
 public:
 	Node();
 	~Node();
-	Node(charString myData, Node* pointer = NULL);
+	Node(charString myData);
 };
 
 class Stack
 {
-private:
+public:
 	Node *base;
 	Node *top;
 	int stackLength;

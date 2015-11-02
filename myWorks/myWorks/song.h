@@ -24,6 +24,6 @@ public:
 
 extern Song getSongInfo(string filePath);
 extern bool getPart(charString s, charString match);
-extern Song analyzeInfo(charString s);
+extern void analyzeInfo(charString* s);
 
 #endif

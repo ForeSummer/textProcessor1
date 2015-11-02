@@ -4,9 +4,9 @@ Node::Node() {
 	this->next = NULL;
 }
 
-Node::Node(charString myData, Node* pointer) {
+Node::Node(charString myData) {
 	this->data = myData;
-	this->next = pointer;
+	this->next = NULL;
 }
 
 Node::~Node() {
@@ -42,6 +42,7 @@ void Stack::push(Node* n) {
 		this->top = n;
 		this->stackLength++;
 	}
+	cout << n->data.toString()<<endl;
 }
 
 void Stack::pop() {
@@ -49,6 +50,7 @@ void Stack::pop() {
 		return;
 	}
 	Node* p = this->top;
+	cout << "/"<<this->top->data.toString()<<endl;
 	this->top = this->top->next;
 	this->stackLength --;
 	delete p;
