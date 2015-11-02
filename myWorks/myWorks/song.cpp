@@ -97,7 +97,17 @@ void analyzeInfo(charString *s) {
 	myStack.initStack();
 	Node *temp = NULL;
 	charString tempString;
-	string div = "div", h2 = "h2", a = "a", ul = "ul", li = "li", script = "script", span = "span", p = "p", textarea = "textarea";
+	int liNum = 0;
+	int titleStart = 0, titleEnd = 0;
+	int singerStart = 0, singerEnd = 0;
+	int albumStart = 0, albumEnd = 0;
+	int dateStart = 0, dateEnd = 0;
+	int lyriclistStart = 0, lyriclistEnd = 0;
+	int composerStart = 0, composerEnd = 0;
+	int lyricStart = 0, lyricEnd = 0;
+	string div = "div", h2 = "h2", a = "a", ul = "ul", li = "li", script = "script", span = "span", p = "p", textarea = "textarea", lyriclist = "´Ê", composer = "Çú", colonInCN = "£º";
+	charString lyriclistString(lyriclist), composerString(composer), colonCNString(colonInCN);
+	//cout <<composerString.length<<endl;
 	int pos = 0;
 	while (pos < s->length) {
 		if (s->line[pos] == '<') {
@@ -118,6 +128,16 @@ void analyzeInfo(charString *s) {
 					break;
 				case 'a':
 					if (myStack.top->data.line[0] == 'a') {
+						if (liNum == 1) {
+							singerEnd = pos;
+							mySong.singer = s->subString(singerStart, singerEnd - singerStart);
+							//cout << mySong.singer.toString()<<endl;
+						}
+						else if (liNum == 3) {
+							albumEnd = pos;
+							mySong.album = s->subString(albumStart, albumEnd - albumStart);
+							//cout << mySong.album.toString()<<endl;
+						}
 						myStack.pop();
 					}
 					break;
@@ -134,6 +154,11 @@ void analyzeInfo(charString *s) {
 				case 's':
 					if (s->line[pos + 3] == 'p') {
 						if (myStack.top->data.line[0] == 's' && myStack.top->data.line[1] == 'p') {
+							if (liNum == 4) {
+								dateEnd = pos;
+								mySong.publicDate = s->subString(dateStart, dateEnd - dateStart);
+								//cout << mySong.publicDate.toString()<<endl;
+							}
 							myStack.pop();
 						}
 					}
@@ -146,10 +171,25 @@ void analyzeInfo(charString *s) {
 				case 'p':
 					if (myStack.top->data.line[0] == 'p') {
 						myStack.pop();
+						if (composerStart != 0) {
+							composerEnd = pos;
+							mySong.composer = s->subString(composerStart, composerEnd - composerStart);
+							cout << mySong.composer.toString()<<endl;
+							composerStart = 0;
+						}
+						else if (lyriclistStart != 0) {
+							lyriclistEnd = pos;
+							mySong.lyricist = s->subString(lyriclistStart, lyriclistEnd - lyriclistStart);
+							cout << mySong.lyricist.toString()<<endl;
+							lyriclistStart = 0;
+						}
 					}
 					break;
 				case 't':
 					if (myStack.top->data.line[0] == 't') {
+						lyricEnd = pos;
+						mySong.lyrics = s->subString(lyricStart, lyricEnd - lyricStart);
+						//cout << mySong.lyrics.toString()<<endl;
 						myStack.pop();
 					}
 					break;
@@ -169,11 +209,23 @@ void analyzeInfo(charString *s) {
 					tempString = charString(h2);
 					temp = new Node(tempString);
 					myStack.push(temp);
+					//get title info
+					titleStart = titleEnd = pos + 11;
+					while (1) {
+						titleEnd ++;
+						if (s->line[titleEnd] == '"') {
+							break;
+						}
+					}
+					mySong.title = s->subString(titleStart, titleEnd - titleStart);
+					//cout << mySong.title.toString()<<endl;
 					break;
 				case 'a':
 					tempString = charString(a);
 					temp = new Node(tempString);
 					myStack.push(temp);
+					//top .next ==li singer
+					//top.next == li album
 					break;
 				case 'u':
 					tempString = charString(ul);
@@ -181,6 +233,7 @@ void analyzeInfo(charString *s) {
 					myStack.push(temp);
 					break;
 				case 'l':
+					liNum ++;
 					tempString = charString(li);
 					temp = new Node(tempString);
 					myStack.push(temp);
@@ -190,6 +243,8 @@ void analyzeInfo(charString *s) {
 						tempString = charString(span);
 						temp = new Node(tempString);
 						myStack.push(temp);
+						//first	lauguage
+						//second date
 						break;
 					}
 					else {
@@ -217,6 +272,43 @@ void analyzeInfo(charString *s) {
 		}
 		else if (s->line[pos] == '>') {
 			//if the tag is li or p or textarea, then get info
+			if (!myStack.isEmpty()) {
+				if (myStack.top->data.line[0] == 't') {
+					lyricStart = pos + 1;
+				}
+				else if (myStack.top->data.line[0] == 'a') {
+					if (liNum == 1) {
+						singerStart = pos + 1;
+					}
+					else if (liNum == 3) {
+						albumStart = pos + 1;
+					}
+				}
+				else if (myStack.top->data.line[0] == 's' && myStack.top->data.line[1] == 'p') {
+					if (liNum == 4) {
+						dateStart = pos + 1;
+					}
+				}
+				else if(myStack.top->data.line[0] == 'p') {
+					if (s->line[pos + 1] == composerString.line[0] && s->line[pos + 2] == composerString.line[1]) {
+						if (s->line[pos + 3] == ':') {
+							composerStart = pos + 4;
+						}
+						else if (s->line[pos + 3] == colonCNString.line[0] && s->line[pos + 4] == colonCNString.line[1]) {
+							composerStart = pos + 5;
+						}
+					}
+					else if (s->line[pos + 1] == lyriclistString.line[0] && s->line[pos + 2] == lyriclistString.line[1]) {
+						if (s->line[pos + 3] == ':') {
+							lyriclistStart = pos + 4;
+						}
+						else if (s->line[pos + 3] == colonCNString.line[0] && s->line[pos + 4] == colonCNString.line[1]) {
+							lyriclistStart = pos + 5;
+						}
+					}
+				}
+			}
+			
 		}
 		pos++;
 	}

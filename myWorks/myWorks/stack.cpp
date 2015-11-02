@@ -42,7 +42,7 @@ void Stack::push(Node* n) {
 		this->top = n;
 		this->stackLength++;
 	}
-	cout << n->data.toString()<<endl;
+	//cout << n->data.toString()<<endl;
 }
 
 void Stack::pop() {
@@ -50,7 +50,7 @@ void Stack::pop() {
 		return;
 	}
 	Node* p = this->top;
-	cout << "/"<<this->top->data.toString()<<endl;
+	//cout << "/"<<this->top->data.toString()<<endl;
 	this->top = this->top->next;
 	this->stackLength --;
 	delete p;

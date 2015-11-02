@@ -26,7 +26,7 @@ int main() {
 		//cout << temp<<endl;
 		s = charString(temp);
 		//cout << s.toString()<<endl;
-		cout << s.length<<endl;
+		//cout << s.length<<endl;
 		if(getPart(s, matchString2))	{
 			
 			break;
