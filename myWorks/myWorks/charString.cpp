@@ -42,6 +42,9 @@ char charString::indexOf(int index) {
 
 string charString::toString() {
 	string s = "";
+	if (this->length == 0) {
+		return s;
+	}
 	for (int i = 0; i < this->length; i++)
 	{
 		s = s + this->line[i];

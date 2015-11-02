@@ -24,8 +24,12 @@ void Song::printSongInfo(string outputPath) {
 	outFs << this->singer.toString() << endl;
 	outFs << this->album.toString() << endl;
 	outFs << this->publicDate.toString() << endl;
-	outFs << this->lyricist.toString() << endl;
-	outFs << this->composer.toString() << endl;
+	if (this->lyricist.line[0] != '#') {
+		outFs << this->lyricist.toString() << endl;
+	}
+	if (this->composer.line[0] != '#') {
+		outFs << this->composer.toString() << endl;
+	}
 	outFs << this->lyrics.toString() << endl;
 	outFs.close();
 }
@@ -59,14 +63,15 @@ Song getSongInfo(string filePath) {
 	while (1)
 	{
 		getline(inFs,temp);
+		temp = temp + '\n';
 		s = charString(temp);
 		if(getPart(s, matchString2))	{
 			break;
 		}
-		info.concat(s);
+		info = info.concat(s);
 	}
-	//Song mySong = analyzeInfo(&info);
-	Song mySong;
+	inFs.close();
+	Song mySong = analyzeInfo(&info);
 	return mySong;
 }
 
@@ -91,7 +96,8 @@ bool getPart(charString s, charString match) {
 	}
 	return false;
 }
-void analyzeInfo(charString *s) {
+
+Song analyzeInfo(charString *s) {
 	Song mySong;
 	Stack myStack;
 	myStack.initStack();
@@ -105,7 +111,7 @@ void analyzeInfo(charString *s) {
 	int lyriclistStart = 0, lyriclistEnd = 0;
 	int composerStart = 0, composerEnd = 0;
 	int lyricStart = 0, lyricEnd = 0;
-	string div = "div", h2 = "h2", a = "a", ul = "ul", li = "li", script = "script", span = "span", p = "p", textarea = "textarea", lyriclist = "´Ê", composer = "Çú", colonInCN = "£º";
+	string div = "div", h2 = "h2", a = "a", ul = "ul", li = "li", script = "script", span = "span", p = "p", textarea = "textarea", lyriclist = "´Ê", composer = "Çú", colonInCN = "£º", none = "#";
 	charString lyriclistString(lyriclist), composerString(composer), colonCNString(colonInCN);
 	//cout <<composerString.length<<endl;
 	int pos = 0;
@@ -158,6 +164,7 @@ void analyzeInfo(charString *s) {
 								dateEnd = pos;
 								mySong.publicDate = s->subString(dateStart, dateEnd - dateStart);
 								//cout << mySong.publicDate.toString()<<endl;
+								liNum = 0;
 							}
 							myStack.pop();
 						}
@@ -174,13 +181,13 @@ void analyzeInfo(charString *s) {
 						if (composerStart != 0) {
 							composerEnd = pos;
 							mySong.composer = s->subString(composerStart, composerEnd - composerStart);
-							cout << mySong.composer.toString()<<endl;
+							//cout << mySong.composer.toString()<<endl;
 							composerStart = 0;
 						}
 						else if (lyriclistStart != 0) {
 							lyriclistEnd = pos;
 							mySong.lyricist = s->subString(lyriclistStart, lyriclistEnd - lyriclistStart);
-							cout << mySong.lyricist.toString()<<endl;
+							//cout << mySong.lyricist.toString()<<endl;
 							lyriclistStart = 0;
 						}
 					}
@@ -188,13 +195,13 @@ void analyzeInfo(charString *s) {
 				case 't':
 					if (myStack.top->data.line[0] == 't') {
 						lyricEnd = pos;
-						mySong.lyrics = s->subString(lyricStart, lyricEnd - lyricStart);
+						mySong.lyrics = s->subString(lyricStart, lyricEnd - lyricStart - 1);
 						//cout << mySong.lyrics.toString()<<endl;
 						myStack.pop();
 					}
 					break;
 				}
-				
+				pos = pos + 2;
 				//check stack top,then pop stack
 			}
 			else {
@@ -217,6 +224,7 @@ void analyzeInfo(charString *s) {
 							break;
 						}
 					}
+					pos = titleEnd;
 					mySong.title = s->subString(titleStart, titleEnd - titleStart);
 					//cout << mySong.title.toString()<<endl;
 					break;
@@ -268,7 +276,7 @@ void analyzeInfo(charString *s) {
 
 				//judge if it is html tag, then push stack
 			}
-			
+			pos ++;
 		}
 		else if (s->line[pos] == '>') {
 			//if the tag is li or p or textarea, then get info
@@ -312,5 +320,11 @@ void analyzeInfo(charString *s) {
 		}
 		pos++;
 	}
-	return;
+	if (mySong.lyricist.line == NULL) {
+		mySong.lyricist = charString(none);
+	}
+	if (mySong.composer.line == NULL) {
+		mySong.composer = charString(none);
+	}
+	return mySong;
 }
