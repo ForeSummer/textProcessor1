@@ -78,6 +78,7 @@
   <ItemGroup>
     <ClCompile Include="charString.cpp" />
     <ClCompile Include="charStringLink.cpp" />
+    <ClCompile Include="divideWord.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="song.cpp" />
     <ClCompile Include="stack.cpp" />
@@ -85,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="charString.h" />
     <ClInclude Include="charStringLink.h" />
+    <ClInclude Include="divideWord.h" />
     <ClInclude Include="song.h" />
     <ClInclude Include="stack.h" />
   </ItemGroup>

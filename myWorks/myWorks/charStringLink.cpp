@@ -1,33 +1,30 @@
 #include "charStringLink.h"
+#include <fstream>
 
-charStringNode::charStringNode() {
-	this->next = NULL;
-}
-
-charStringNode::charStringNode(charString* s) {
-	this->data = s; 
-	this->next = NULL;
-}
-
-charStringNode::~charStringNode() {
-	delete this->data;
-}
 
 charStringLink::charStringLink() {
 	this->head = this->tail = NULL;
 	this->length = 0;
 }
 
+charStringLink::~charStringLink() {
+	Node *p, *q;
+	p = q = this->head;
+	while (p != NULL) {
+		q = p;
+		p = p->next;
+		delete q;
+	}
+}
 
-void charStringLink::addStringNode(charString* s) {
-	 charStringNode node(s);
+void charStringLink::addStringNode(Node *node) {
 	 if (this->head == NULL) {
-		 this->head = this->tail = &node;
+		 this->head = this->tail = node;
 		 this->length = 1;
 	 }
 	 else {
-		 this->tail->next = &node;
-		 this->tail = &node;
+		 this->tail->next = node;
+		 this->tail = node;
 		 this->length ++;
 	 }
 }
@@ -41,7 +38,7 @@ void charStringLink::deleteStringNode(int index) {
 			delete this->head;
 			this->head = this->tail = NULL;
 		}
-		charStringNode *p;
+		Node *p;
 		p = this->head;
 		this->head = this->head->next;
 		delete p;
@@ -49,9 +46,9 @@ void charStringLink::deleteStringNode(int index) {
 		return;
 	}
 	else if(index == this->length - 1) {
-		charStringNode *p;
+		Node *p;
 		p = this->head;
-		for (int i = 0; i < index; i++)	{
+		for (int i = 0; i < index - 1; i++)	{
 			p = p->next;
 		}
 		p->next = NULL;
@@ -61,7 +58,7 @@ void charStringLink::deleteStringNode(int index) {
 		return;
 	}
 	else {
-		charStringNode *p, *q;
+		Node *p, *q;
 		p = q = this->head;
 		for (int i = 0; i < index; i++)	{
 			p = q = p->next;
@@ -72,4 +69,20 @@ void charStringLink::deleteStringNode(int index) {
 		this->length --;
 		return;
 	}
+}
+
+void charStringLink::outPutList(string outPath) {
+	ofstream outFs(outPath, ios::out);
+	if (this->head == NULL) {
+		outFs.close();
+		return;
+	}
+	Node *p;
+	p = head;
+	while (p != NULL) {
+		outFs << p->data.toString() << endl;
+		p = p->next;
+	}
+	outFs.close();
+	return;
 }

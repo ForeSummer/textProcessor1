@@ -2,29 +2,23 @@
 #define CHARSTRINGLINK_H
 
 #include "charString.h"
+#include "stack.h"
 
-class charStringNode
-{
-public:
-	charString* data;
-	charStringNode* next;
-public:
-	charStringNode();
-	charStringNode(charString* s);
-	~charStringNode();
-};
 
 class charStringLink
 {
 public:
-	charStringNode* head;
-	charStringNode* tail;
+	Node* head;
+	Node* tail;
 	int length;
 public:
 	charStringLink();
-	void addStringNode(charString* s);
+	~charStringLink();
+	void addStringNode(Node *n);
 	void deleteStringNode(int index);
 	int searchList(charString s);
+	void outPutList(string outPath);
 };
+
 
 #endif
