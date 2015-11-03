@@ -34,6 +34,10 @@ charString::charString(charString& s){
 	*temp = '\0';
 }
 
+charString::~charString() {
+	delete this->line;
+}
+
 int charString::indexOf(char ch) {
 	int index = 0;
 	while (index < this->length) {
@@ -58,6 +62,16 @@ string charString::toString() {
 		s = s + this->line[i];
 	}
 	return s;
+}
+
+void charString::deleteChar(int index) {
+	if (index >= this->length) {
+		return;
+	}
+	for (int i = index; i < this->length; i++) {
+		this->line[i] = this->line[i + 1];
+	}
+	this->length --;
 }
 
 charString charString::subString(int index, int length) {

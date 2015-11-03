@@ -21,6 +21,10 @@ extern void initDictionaryInfo(Dic *myDic, string filePath);
 
 extern void divideWords(Song *mySong, Dic *myDic);
 
-extern void analyzeString();
+extern charString *getCNString(charString *s);
+
+extern bool isEqual(charString s, Dic *myDic);
+
+extern void analyzeString(charString *s, Dic *myDic, charStringLink *myLink);
 
 #endif
