@@ -19,12 +19,13 @@ public:
 
 extern void initDictionaryInfo(Dic *myDic, string filePath);
 
-extern void divideWords(Song *mySong, Dic *myDic);
+extern charStringLink* divideWords(Song *mySong, charStringLink *allWords, Dic *myDic, Dic *banList);
 
 extern charString *getCNString(charString *s);
 
 extern bool isEqual(charString s, Dic *myDic);
 
-extern void analyzeString(charString *s, Dic *myDic, charStringLink *myLink);
+extern void analyzeString(charString *s, Dic *myDic, charStringLink *myLink, Dic *banList);
+
 
 #endif

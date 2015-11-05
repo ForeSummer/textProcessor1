@@ -15,15 +15,14 @@ void initDictionaryInfo(Dic *myDic, string filePath) {
 	return;
 }
 
-void divideWords(Song *mySong, Dic *myDic) {
+charStringLink* divideWords(Song *mySong, charStringLink *allWords, Dic *myDic , Dic *banList) {
 	charString toDivide, lyric;
 	charString *CNString = NULL;
-	charStringLink allWords;
 	lyric = mySong->lyrics;
 	while (1) {
 		toDivide = lyric.subString(0, lyric.indexOf('\n'));
 		CNString = getCNString(&toDivide);
-		analyzeString(CNString, myDic, &allWords);
+		analyzeString(CNString, myDic, allWords, banList);
 		lyric = lyric.subString(lyric.indexOf('\n') + 1, lyric.length);
 		if (lyric.indexOf('\n') == -1) {
 			break;
@@ -31,37 +30,15 @@ void divideWords(Song *mySong, Dic *myDic) {
 	}
 	toDivide = lyric;
 	CNString = getCNString(&toDivide);
-	analyzeString(CNString, myDic, &allWords);
-	allWords.outPutList("out1.txt");
+	analyzeString(CNString, myDic, allWords, banList);
+	return allWords;
 }
 
 charString *getCNString(charString *s) {
 	int i = 0;
-	string s1 = "£¨", s2 = "£©", s3 = "£º", s4 = "¡«";
 	while (i < s->length) {
 		if (s->line[i] > 0) {
 			s->deleteChar(i);
-			continue;
-		}
-		else if(s->line[i] == s1[0] && s->line[i + 1] == s1[1]) {
-			s->deleteChar(i);
-			s->deleteChar(i);
-			continue;
-		}
-		else if(s->line[i] == s2[0] && s->line[i + 1] == s2[1]) {
-			s->deleteChar(i);
-			s->deleteChar(i);
-			continue;
-		}
-		else if(s->line[i] == s4[0] && s->line[i + 1] == s4[1]) {
-			s->deleteChar(i);
-			s->deleteChar(i);
-			continue;
-		}
-		else if(s->line[i] == s3[0] && s->line[i + 1] == s3[1]) {
-			for (int j = 0; j <= i + 1; j++) {
-				s->deleteChar(0);
-			}
 			continue;
 		}
 		if (s->length == 0) {
@@ -88,7 +65,7 @@ bool isEqual(charString s, Dic *myDic) {
 	return false;
 }
 
-void analyzeString(charString *s, Dic *myDic, charStringLink *myLink) {
+void analyzeString(charString *s, Dic *myDic, charStringLink *myLink, Dic *banList) {
 	if (s->length < 2) {
 		return;
 	}
@@ -98,8 +75,10 @@ void analyzeString(charString *s, Dic *myDic, charStringLink *myLink) {
 	while (1) {
 		temp = s->subString(startPos, endPos - startPos);
 		if (endPos - startPos == 2 || isEqual(temp, myDic)) {
-			p = new Node(temp);
-			myLink->addStringNode(p);
+			if (!isEqual(temp, banList)) {
+				p = new Node(temp);
+				myLink->addStringNode(p);
+			}
 			if (endPos == s->length) {
 				break;
 			}
