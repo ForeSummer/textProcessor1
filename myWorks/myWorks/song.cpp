@@ -51,6 +51,7 @@ Song extractMusicInfoFromPage(string filePath) {
 	charString matchString1 = charString(match1), matchString2 = charString(match2);
 	charString s, info;
 	string temp;
+	//匹配 song_info_area
 	while (1)
 	{
 		getline(inFs,temp);
@@ -60,6 +61,7 @@ Song extractMusicInfoFromPage(string filePath) {
 			break;
 		}
 	}
+	//匹配 music_list_area
 	while (1)
 	{
 		getline(inFs,temp);
@@ -75,6 +77,7 @@ Song extractMusicInfoFromPage(string filePath) {
 	return mySong;
 }
 
+//判断是否匹配成功
 bool getPart(charString s, charString match) {
 	int sameNum = 0;
 	char ch = match.line[0];
@@ -104,6 +107,7 @@ Song analyzeInfo(charString *s) {
 	Node *temp = NULL;
 	charString tempString;
 	int liNum = 0;
+	//记录截取信息的起始下标
 	int titleStart = 0, titleEnd = 0;
 	int singerStart = 0, singerEnd = 0;
 	int albumStart = 0, albumEnd = 0;
@@ -113,10 +117,10 @@ Song analyzeInfo(charString *s) {
 	int lyricStart = 0, lyricEnd = 0;
 	string div = "div", h2 = "h2", a = "a", ul = "ul", li = "li", script = "script", span = "span", p = "p", textarea = "textarea", lyriclist = "词", composer = "曲", colonInCN = "：", none = "#" , colonInEG = ":";
 	charString lyriclistString(lyriclist), composerString(composer), colonCNString(colonInCN), colonEGString(colonInEG);
-	//cout <<composerString.length<<endl;
 	int pos = 0;
 	while (pos < s->length) {
 		if (s->line[pos] == '<') {
+			//如果找到'<'并且下一位是'/'则出栈操作
 			if (s->line[pos + 1] == '/') {
 				switch (s->line[pos + 2])
 				{
@@ -137,12 +141,10 @@ Song analyzeInfo(charString *s) {
 						if (liNum == 1) {
 							singerEnd = pos;
 							mySong.singer = s->subString(singerStart, singerEnd - singerStart);
-							//cout << mySong.singer.toString()<<endl;
 						}
 						else if (liNum == 3) {
 							albumEnd = pos;
 							mySong.album = s->subString(albumStart, albumEnd - albumStart);
-							//cout << mySong.album.toString()<<endl;
 						}
 						myStack.pop();
 					}
@@ -163,7 +165,6 @@ Song analyzeInfo(charString *s) {
 							if (liNum == 4) {
 								dateEnd = pos;
 								mySong.publicDate = s->subString(dateStart, dateEnd - dateStart);
-								//cout << mySong.publicDate.toString()<<endl;
 								liNum = 0;
 							}
 							myStack.pop();
@@ -181,13 +182,11 @@ Song analyzeInfo(charString *s) {
 						if (composerStart != 0) {
 							composerEnd = pos;
 							mySong.composer = s->subString(composerStart, composerEnd - composerStart);
-							//cout << mySong.composer.toString()<<endl;
 							composerStart = 0;
 						}
 						else if (lyriclistStart != 0) {
 							lyriclistEnd = pos;
 							mySong.lyricist = s->subString(lyriclistStart, lyriclistEnd - lyriclistStart);
-							//cout << mySong.lyricist.toString()<<endl;
 							lyriclistStart = 0;
 						}
 					}
@@ -196,14 +195,13 @@ Song analyzeInfo(charString *s) {
 					if (myStack.top->data.line[0] == 't') {
 						lyricEnd = pos;
 						mySong.lyrics = s->subString(lyricStart, lyricEnd - lyricStart - 1);
-						//cout << mySong.lyrics.toString()<<endl;
 						myStack.pop();
 					}
 					break;
 				}
 				pos = pos + 2;
-				//check stack top,then pop stack
 			}
+			//如果找到'<'并且下一位不是'/'则进栈操作
 			else {
 				switch (s->line[pos + 1])
 				{
@@ -216,7 +214,6 @@ Song analyzeInfo(charString *s) {
 					tempString = charString(h2);
 					temp = new Node(tempString);
 					myStack.push(temp);
-					//get title info
 					titleStart = titleEnd = pos + 11;
 					while (1) {
 						titleEnd ++;
@@ -226,14 +223,11 @@ Song analyzeInfo(charString *s) {
 					}
 					pos = titleEnd;
 					mySong.title = s->subString(titleStart, titleEnd - titleStart);
-					//cout << mySong.title.toString()<<endl;
 					break;
 				case 'a':
 					tempString = charString(a);
 					temp = new Node(tempString);
 					myStack.push(temp);
-					//top .next ==li singer
-					//top.next == li album
 					break;
 				case 'u':
 					tempString = charString(ul);
@@ -251,8 +245,6 @@ Song analyzeInfo(charString *s) {
 						tempString = charString(span);
 						temp = new Node(tempString);
 						myStack.push(temp);
-						//first	lauguage
-						//second date
 						break;
 					}
 					else {
@@ -273,13 +265,12 @@ Song analyzeInfo(charString *s) {
 					myStack.push(temp);
 					break;
 				}
-
-				//judge if it is html tag, then push stack
 			}
 			pos ++;
 		}
 		else if (s->line[pos] == '>') {
 			//if the tag is li or p or textarea, then get info
+			//判断栈顶信息并进行相关操作
 			if (!myStack.isEmpty()) {
 				if (myStack.top->data.line[0] == 't') {
 					lyricStart = pos + 1;
@@ -315,11 +306,11 @@ Song analyzeInfo(charString *s) {
 						}
 					}
 				}
-			}
-			
+			}	
 		}
 		pos++;
 	}
+	//去除歌词中冗余信息
 	lyriclistStart = mySong.lyrics.indexOf('\n');
 	mySong.lyrics = mySong.lyrics.subString(lyriclistStart + 1, mySong.lyrics.length);
 	charString judge;

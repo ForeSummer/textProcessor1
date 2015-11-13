@@ -11,7 +11,7 @@
 class Dic
 {
 public:
-	charStringLink dic[160];
+	charStringLink dic[150];
 public:
 	Dic(){};
 };

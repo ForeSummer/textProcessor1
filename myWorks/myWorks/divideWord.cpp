@@ -19,6 +19,7 @@ charStringLink* divideWords(Song *mySong, charStringLink *allWords, Dic *myDic ,
 	charString toDivide, lyric;
 	charString *CNString = NULL;
 	lyric = mySong->lyrics;
+	//歌词分成行再处理
 	while (1) {
 		toDivide = lyric.subString(0, lyric.indexOf('\n'));
 		CNString = getCNString(&toDivide);
@@ -35,6 +36,7 @@ charStringLink* divideWords(Song *mySong, charStringLink *allWords, Dic *myDic ,
 }
 
 charString *getCNString(charString *s) {
+	//除去非中文字符
 	int i = 0;
 	while (i < s->length) {
 		if (s->line[i] > 0) {

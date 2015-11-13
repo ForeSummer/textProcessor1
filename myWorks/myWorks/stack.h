@@ -2,7 +2,7 @@
 #define STACK_H
 
 #include "charString.h"
-#define STACK_SIZE 100
+
 
 
 class Node
