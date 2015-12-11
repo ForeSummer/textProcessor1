@@ -47,13 +47,15 @@ int main(int argc, char *argv[]) {
 	//提取歌曲信息并进行分词
 	for (int i = 0; i < size; i ++) {
 		myPath = files[i];
-		mySong = extractMusicInfoFromPage(myPath);
 		temp = files[i].substr(inputPath.length(), files[i].length() - inputPath.length() - 5);
+		cout << "Now Loading " << files[i].substr(inputPath.length(), files[i].length() - inputPath.length()) << "..." << endl;
+		mySong = extractMusicInfoFromPage(myPath);
 		myPath = outputPath + temp + out1;
 		mySong.printSongInfo(myPath);
 		allWords = divideWords(&mySong, &myLink[i], &myDic, &banList);
 		myPath = outputPath + temp + out2;
 		allWords->outPutList(myPath);
+		cout << "Loading Success" << endl;
 	}
 	return 0;
 }

@@ -1,6 +1,22 @@
 #include "divideWord.h"
 #include <math.h>
 
+bool Dic::isEqual(charString s) {
+	int length = this->dic[abs(s.line[0])].length;
+	if (length == 0) {
+		return false;
+	}
+	Node *p;
+	p = this->dic[abs(s.line[0])].head;
+	for (int i = 0; i < length; i ++) {
+		if (s == p->data) {
+			return true;
+		}
+		p = p->next;
+	}
+	return false;
+}
+
 void initDictionaryInfo(Dic *myDic, string filePath) {
 	ifstream inFs(filePath, ios::in);
 	charString s;
@@ -49,22 +65,6 @@ charString *getCNString(charString *s) {
 		i ++;
 	}
 	return s;
-}
-
-bool isEqual(charString s, Dic *myDic) {
-	int length = myDic->dic[abs(s.line[0])].length;
-	if (length == 0) {
-		return false;
-	}
-	Node *p;
-	p = myDic->dic[abs(s.line[0])].head;
-	for (int i = 0; i < length; i ++) {
-		if (s == p->data) {
-			return true;
-		}
-		p = p->next;
-	}
-	return false;
 }
 
 void analyzeString(charString *s, Dic *myDic, charStringLink *myLink, Dic *banList) {
