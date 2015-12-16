@@ -33,6 +33,12 @@
     <ClCompile Include="divideWord.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="BTree.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="dic.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stack.h">
@@ -48,6 +54,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="divideWord.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="dic.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
