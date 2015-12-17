@@ -2,6 +2,8 @@
 #define BTREE_H
 
 #include "dic.h"
+#include <io.h>
+#include <vector>
 
 static const int M = 3;  
 static const int KEY_MAX = 2*M-1;
@@ -15,7 +17,7 @@ class BTNode
 {
 public:
 	int keyNum;
-	word *key[KEY_MAX];
+	word* key[KEY_MAX];
 	bool leaf;
 	BTNode *parent;
 	BTNode *ptr[CHILD_MAX];
@@ -47,6 +49,13 @@ private:
 
 };
 
-extern bool canFound(BTNode *p, word* key);
+class invertedFile
+{
+public:
+	BTree myFile;
+	void buildFile(string path);
+	void insertFile(string filePath);
+	void saveFile(string filePath);
+};
 
 #endif

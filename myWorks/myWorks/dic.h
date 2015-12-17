@@ -3,8 +3,16 @@
 
 #include <string>
 #include <iostream>
-#include "BTree.h"
+#include <vector>
 using namespace std;
+
+class docNode
+{
+public:
+	int docID;
+	int times;
+	docNode();
+};
 
 class word
 {
@@ -13,27 +21,10 @@ public:
 	int termID;
 	int DF;
 	int occur;
-	docNode *docInfo;
+	vector<docNode*> docInfo;
 	word();
+	~word();
 	void addNewInfo(int docID);
 };
 
-class docNode
-{
-public:
-	int docID;
-	int times;
-	docNode *next;
-	docNode();
-};
-
-class invertedFile
-{
-public:
-	BTree myFile;
-	void buildFile(string path);
-	void insertFile(string filePath);
-	void saveFile(string filePath);
-	invertedFile(string filePath);
-};
 #endif // !DIC_H

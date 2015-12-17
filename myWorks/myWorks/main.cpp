@@ -5,6 +5,7 @@ using namespace std;
 #include "stack.h"
 #include "charStringLink.h"
 #include "divideWord.h"
+#include "BTree.h"
 #include <io.h>
 #include <vector>
 
@@ -24,8 +25,13 @@ void getFiles(string path, vector<string>& files) {
 	}
 }
 
-int main(int argc, char *argv[]) {
-	string configPath, inputPath, outputPath, dicPath, banListPath, myPath, temp;
+int main(/*int argc, char *argv[]*/) {
+	string path = "E://test";
+	string outputFile = "E://test//output.info";
+	invertedFile myFile;
+	myFile.buildFile(path);
+	myFile.saveFile(outputFile);
+	/*string configPath, inputPath, outputPath, dicPath, banListPath, myPath, temp;
 	configPath = argv[1];
 	inputPath = argv[2];
 	outputPath = argv[3];
@@ -56,6 +62,6 @@ int main(int argc, char *argv[]) {
 		myPath = outputPath + temp + out2;
 		allWords->outPutList(myPath);
 		cout << "Loading Success" << endl;
-	}
+	}*/
 	return 0;
 }

@@ -76,8 +76,8 @@ void analyzeString(charString *s, Dic *myDic, charStringLink *myLink, Dic *banLi
 	int startPos = 0, endPos = s->length;
 	while (1) {
 		temp = s->subString(startPos, endPos - startPos);
-		if (endPos - startPos == 2 || isEqual(temp, myDic)) {
-			if (!isEqual(temp, banList)) {
+		if (endPos - startPos == 2 || myDic->isEqual(temp)) {
+			if (!banList->isEqual(temp)) {
 				p = new Node(temp);
 				myLink->addStringNode(p);
 			}
