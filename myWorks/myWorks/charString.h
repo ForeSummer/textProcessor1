@@ -22,6 +22,8 @@ public:
 	charString subString(int index, int length);
 	charString concat(charString s);
 	bool operator == (charString& s);
+	bool operator < (charString& s);
+	bool operator > (charString& s);
 	charString& operator = (const charString& s);
 };
 

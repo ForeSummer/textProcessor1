@@ -25,8 +25,8 @@ void getFiles(string path, vector<string>& files) {
 	}
 }
 
-int main(/*int argc, char *argv[]*/) {
-	string path = "E://test";
+int main(int argc, char *argv[]) {
+	string path = "E://output";
 	string outputFile = "E://test//output.info";
 	invertedFile myFile;
 	myFile.buildFile(path);

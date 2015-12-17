@@ -8,31 +8,51 @@ word::word() {
 	this->DF = 0;
 	this->termID = -1;
 	this->occur = 0;
+	this->docInfo = NULL;
 }
 
 word::~word() {
-	for (int i = 0; i < this->docInfo.size(); i++) {
-		delete this->docInfo[i];
+	docNode *p, *q;
+	p = q = this->docInfo;
+	while (p != NULL) {
+		q = p;
+		p = p->next;
+		delete q;
 	}
 }
 
 docNode::docNode() {
 	this->docID = -1;
 	this->times = 0;
+	this->next = NULL;
 }
 
 
 void word::addNewInfo(int docID) {
-	docNode *p;
-	for (int i = 0; i < this->docInfo.size(); i ++) {
-		if (this->docInfo[i]->docID == docID) {
-			this->docInfo[i]->times ++;
+	docNode *p, *q;
+	p = this->docInfo;
+	if (p == NULL) {
+		this->docInfo = new docNode();
+		this->docInfo->docID = docID;
+		this->docInfo->times ++;
+		this->DF ++;
+		return;
+	}
+	while (p->next != NULL) {
+		if (p->docID == docID) {
+			p->times ++;
 			return;
 		}
+		p = p->next;
 	}
-	p = new docNode();
-	p->docID = docID;
-	p->times ++;
+	if (p->docID == docID) {
+		p->times ++;
+		return;
+	}
+	q = new docNode();
+	q->docID = docID;
+	q->times ++;
+	p->next = q;
 	this->DF ++;
 	return;
 }

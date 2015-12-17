@@ -1,9 +1,8 @@
 #ifndef DIC_H
 #define DIC_H
 
-#include <string>
+#include "charString.h"
 #include <iostream>
-#include <vector>
 using namespace std;
 
 class docNode
@@ -11,17 +10,18 @@ class docNode
 public:
 	int docID;
 	int times;
+	docNode *next;
 	docNode();
 };
 
 class word
 {
 public:
-	string term;
+	charString term;
 	int termID;
 	int DF;
 	int occur;
-	vector<docNode*> docInfo;
+	docNode* docInfo;
 	word();
 	~word();
 	void addNewInfo(int docID);

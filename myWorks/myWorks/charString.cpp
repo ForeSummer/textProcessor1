@@ -118,6 +118,49 @@ bool charString::operator== (charString& s) {
 	}
 	return true;
 }
+
+bool charString::operator< (charString& s) {
+	int i = 0;
+	while (i < this->length && i < s.length) {
+		if (this->line[i] < s.line[i]) {
+			return true;
+		}
+		else if(this->line[i] > s.line[i]) {
+			return false;
+		}
+		else {
+			i ++;
+		}
+	}
+	if (this->length < s.length) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool charString::operator> (charString& s) {
+	int i = 0;
+	while (i < this->length && i < s.length) {
+		if (this->line[i] > s.line[i]) {
+			return true;
+		}
+		else if(this->line[i] < s.line[i]) {
+			return false;
+		}
+		else {
+			i ++;
+		}
+	}
+	if (this->length > s.length) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 charString& charString::operator= (const charString& s) {
 	this->length = s.length;
 	this->line = new char[this->length + 1];

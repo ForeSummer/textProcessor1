@@ -119,7 +119,7 @@ void BTree::insertBTree(word* key) {
 	root->normalInsert(key);
 }
 
-Result BTree::searchBTree(string key) {
+Result BTree::searchBTree(charString key) {
 	Result searchResult(NULL, 0, 0);
 	BTNode *p;
 	p = this->root;
@@ -184,6 +184,7 @@ void BTree::printTree(string outputPath) {
 	ofstream outFs(outputPath, ios::out);
 	queue<BTNode*> myQueue;
 	word *myWord;
+	docNode *info;
 	myQueue.push(this->root);
 	BTNode* p;
 	while (!myQueue.empty()) {
@@ -191,24 +192,27 @@ void BTree::printTree(string outputPath) {
 		if (p->leaf) {
 			for (int i = 0; i < p->keyNum; i ++) {
 				myWord = p->key[i];
-				outFs << '{' << myWord->term << ',' << myWord->DF << ',' << myWord->occur << '}';
-				for (int i = 0; i < myWord->docInfo.size(); i ++) {
-					outFs << '{' << myWord->docInfo[i]->docID << ',' << myWord->docInfo[i]->times << '}';
+				outFs << '{' << myWord->term.toString() << ',' << myWord->DF << ',' << myWord->occur << '}';
+				info = myWord->docInfo;
+				while (info != NULL) {
+					outFs << " {" << info->docID << ',' << info->times << '}';
+					info = info->next;
 				}
-				cout << endl;
+				outFs << endl;
 			}
 			myQueue.pop();
 		}
 		else {
 			for (int i = 0; i < p->keyNum; i ++) {
 				myWord = p->key[i];
-				outFs << '{' << myWord->term << ',' << myWord->DF << ',' << myWord->occur << '}';
-				for (int i = 0; i < myWord->docInfo.size(); i ++) {
-					outFs << '{' << myWord->docInfo[i]->docID << ',' << myWord->docInfo[i]->times << '}';
+				outFs << '{' << myWord->term.toString() << ',' << myWord->DF << ',' << myWord->occur << '}';
+				info = myWord->docInfo;
+				while (info != NULL) {
+					outFs << " {" << info->docID << ',' << info->times << '}';
+					info = info->next;
 				}
-				cout << endl;
+				outFs << endl;
 			}
-			cout << endl;
 			for (int i = 0; i <= p->keyNum; i ++) {
 				myQueue.push(p->ptr[i]);
 			}
@@ -222,14 +226,19 @@ void invertedFile::insertFile(string filePath) {
 	ifstream inFs(filePath, ios::in);
 	int docID;
 	string temp;
-	temp = filePath.substr(filePath.length() - 8, 4);
-	docID = atoi(temp.c_str());
+	charString *line, *ID;
+	line = new charString(filePath);
+	*ID = line->subString(line->length - 8, 4);
+	cout << line->toString()<<endl;
+	docID = atoi(ID->line);
 	Result myResult;
 	word *myWord;
 	while (!inFs.eof()) {
 		getline(inFs,temp);
+		delete line;
+		line = new charString(temp);
 		//cout << temp<<endl;
-		myResult = this->myFile.searchBTree(temp);
+		myResult = this->myFile.searchBTree(*line);
 		if (myResult.isFounded) {
 			myWord = myResult.result->key[myResult.pos];
 			myWord->addNewInfo(docID);
@@ -238,9 +247,12 @@ void invertedFile::insertFile(string filePath) {
 		else {
 			myWord = new word();
 			myWord->term = temp;
+			myWord->occur ++;
+			myWord->addNewInfo(docID);
 			this->myFile.insertBTree(myWord);
 		}
 	}
+	delete line;
 }
 
 void invertedFile::buildFile(string path) {

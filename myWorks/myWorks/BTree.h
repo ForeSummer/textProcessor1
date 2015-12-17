@@ -5,7 +5,7 @@
 #include <io.h>
 #include <vector>
 
-static const int M = 3;  
+static const int M = 15;  
 static const int KEY_MAX = 2*M-1;
 static const int KEY_MIN = M-1;
 static const int CHILD_MAX = KEY_MAX+1;
@@ -40,7 +40,7 @@ class BTree
 {
 public:
 	BTNode *root;
-	Result searchBTree(string key); 
+	Result searchBTree(charString key); 
 	void insertBTree(word* key);
 	void printTree(string outputPath);
 	BTree();
