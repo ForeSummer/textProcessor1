@@ -1,6 +1,8 @@
 #ifndef BTREE_H
 #define BTREE_H
 
+#include "dic.h"
+
 static const int M = 3;  
 static const int KEY_MAX = 2*M-1;
 static const int KEY_MIN = M-1;
@@ -13,13 +15,13 @@ class BTNode
 {
 public:
 	int keyNum;
-	int key[KEY_MAX];
+	word *key[KEY_MAX];
 	bool leaf;
 	BTNode *parent;
 	BTNode *ptr[CHILD_MAX];
 	BTNode();
 	void splitNode(int index);
-	void normalInsert(int key);
+	void normalInsert(word* key);
 };
 
 class Result
@@ -36,15 +38,15 @@ class BTree
 {
 public:
 	BTNode *root;
-	Result searchBTree(int key); 
-	void insertBTree(int key);
-	void printTree();
+	Result searchBTree(string key); 
+	void insertBTree(word* key);
+	void printTree(string outputPath);
 	BTree();
 	~BTree();
 private:
 
 };
 
-extern bool canFound(BTNode *p, int key);
+extern bool canFound(BTNode *p, word* key);
 
 #endif
