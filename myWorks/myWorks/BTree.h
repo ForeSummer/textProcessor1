@@ -4,6 +4,8 @@
 #include "dic.h"
 #include <io.h>
 #include <vector>
+#include "charStringLink.h"
+#include "divideWord.h"
 #include <utility>
 
 static const int M = 15;  
@@ -44,7 +46,7 @@ public:
 	Result searchBTree(charString key); 
 	void insertBTree(word* key);
 	void printTree(string outputPath);
-	void searchInfo(charString key);
+	void searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPath);
 	BTree();
 	~BTree();
 private:
@@ -56,6 +58,7 @@ class invertedFile
 public:
 	BTree myFile;
 	void buildFile(string path);
+	void buildMainFile(string path);
 	void insertFile(string filePath);
 	void saveFile(string filePath);
 	void loadFile(string filePath);

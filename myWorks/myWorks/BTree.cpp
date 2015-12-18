@@ -3,6 +3,7 @@
 #include <queue>
 #include <stack>
 #include <fstream>
+
 using namespace std;
 
 
@@ -240,6 +241,27 @@ void invertedFile::buildFile(string path) {
 	}
 }
 
+void invertedFile::buildMainFile(string path) {
+	vector<string> files;
+	long hFile = 0;
+	struct _finddata_t fileinfo;
+	string p, temp;
+	if((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1) {
+		do {
+			if(strcmp(fileinfo.name,".") != 0 && strcmp(fileinfo.name,"..") != 0){
+				files.push_back(p.assign(path).append("\\").append(fileinfo.name));
+			}
+		}while(_findnext(hFile, &fileinfo)  == 0);
+		_findclose(hFile);
+	}
+	for (int i = 0; i < files.size(); i++) {
+		temp = files[i];
+		if (temp[temp.length() - 1] == 'n') {
+			this->insertFile(files[i]);
+		}
+	}
+}
+
 void invertedFile::saveFile(string filePath) {
 	this->myFile.printTree(filePath);
 }
@@ -251,7 +273,7 @@ void invertedFile::loadFile(string filePath) {
 	charString* line;
 	charString num;
 	word* myWord;
-	docNode* p, *pre = NULL, *info;
+	docNode* p, *pre = NULL;
 	while (!inFs.eof()) {
 		getline(inFs, temp);
 		//delete line;
@@ -302,85 +324,66 @@ void invertedFile::loadFile(string filePath) {
 		}
 		pre = NULL;
 		startPos = endPos = count = 0;
-		/*std::cout << '{' << myWord->term.toString() << ',' << myWord->DF << ',' << myWord->occur << '}';
-		info = myWord->docInfo;
-		while (info != NULL) {
-			std::cout << " {" << info->docID << ',' << info->times << '}';
-			info = info->next;
-		}
-		std::cout << endl;*/
 		this->myFile.insertBTree(myWord);
 	}
 }
 
 
-void BTree::searchInfo(charString key) {
-	int startPos = 0, endPos = 0, wordNum = 0, flag = 0, count = 0, length = 0;
+void BTree::searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPath) {
+	int startPos = 0, endPos = 0, flag = 0, count = 0, length = 0;
 	vector<record> result;
 	record* re;
 	Result info;
+	charStringLink allWords;
 	word* myWord;
 	docNode *p;
 	charString temp;
+	//divide key words
 	for (int i = 0; i < key.length; i ++) {
 		if (key.line[i] == ' ') {
-			wordNum ++;
 			endPos = i;
 			temp = key.subString(startPos, endPos - startPos);
-			info = this->searchBTree(temp);
-			if (info.isFounded) {
-				myWord = info.result->key[info.pos];
-				p = myWord->docInfo;
-				while (p != NULL) {
-					for (int i = 0; i < result.size(); i ++) {
-						if (p->docID == result[i].docID) {
-							result[i].fitNum ++;
-							result[i].times += p->times;
-							flag = 1;
-						}
-					}
-					if (flag == 0) {
-						re =new record();
-						re->docID = p->docID;
-						re->fitNum ++;
-						re->times = p->times;
-						result.push_back(*re);
-					}
-					flag = 0;
-					p = p->next;
-				}
-			}
+			analyzeString(&temp, myDic, &allWords, banlist);
 			startPos = i + 1;
 		}
 	}
-	wordNum ++;
 	endPos = key.length;
 	temp = key.subString(startPos, endPos - startPos);
-	info = this->searchBTree(temp);
-	if (info.isFounded) {
-		myWord = info.result->key[info.pos];
-		p = myWord->docInfo;
-		while (p != NULL) {
-			for (int i = 0; i < result.size(); i ++) {
-				if (p->docID == result[i].docID) {
-					result[i].fitNum ++;
-					result[i].times += p->times;
-					flag = 1;
+	analyzeString(&temp, myDic, &allWords, banlist);
+	//search
+	Node *a;
+	a = allWords.head;
+	while (a != NULL) {
+		info = this->searchBTree(a->data);
+		if (info.isFounded) {
+			myWord = info.result->key[info.pos];
+			p = myWord->docInfo;
+			while (p != NULL) {
+				for (int i = 0; i < result.size(); i ++) {
+					if (p->docID == result[i].docID) {
+						result[i].fitNum ++;
+						result[i].times += p->times;
+						flag = 1;
+					}
 				}
+				if (flag == 0) {
+					re =new record();
+					re->docID = p->docID;
+					re->fitNum ++;
+					re->times = p->times;
+					result.push_back(*re);
+					delete re;
+				}
+				flag = 0;
+				p = p->next;
 			}
-			if (flag == 0) {
-				re =new record();
-				re->docID = p->docID;
-				re->fitNum ++;
-				re->times = p->times;
-				result.push_back(*re);
-				delete re;
-			}
-			flag = 0;
-			p = p->next;
 		}
+		a = a->next;
 	}
+
+	//sort and output result
 	sort(result.begin(),result.end());
+	ofstream outFs(outputPath, ios::out | ios::app);
 	length = result.size();
 	if (length != 0) {
 		count = result[0].fitNum;
@@ -394,8 +397,9 @@ void BTree::searchInfo(charString key) {
 		}
 	}
 	for (int i = 0; i < result.size(); i ++) {
-		std::cout << result[i].docID << "," << result[i].fitNum << "," << result[i].times << endl;
+		outFs << "(" <<result[i].docID << "," << result[i].times << ") ";
 	}
+	outFs << endl;
 }
 
 record::record() {

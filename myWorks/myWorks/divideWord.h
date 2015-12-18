@@ -22,6 +22,8 @@ extern void initDictionaryInfo(Dic *myDic, string filePath);
 
 extern charStringLink* divideWords(Song *mySong, charStringLink *allWords, Dic *myDic, Dic *banList);
 
+extern charStringLink* getMainWords(Song *mySong, charStringLink *allWords, Dic *myDic, Dic *banList);
+
 extern charString *getCNString(charString *s);
 
 extern void analyzeString(charString *s, Dic *myDic, charStringLink *myLink, Dic *banList);

@@ -51,6 +51,24 @@ charStringLink* divideWords(Song *mySong, charStringLink *allWords, Dic *myDic ,
 	return allWords;
 }
 
+charStringLink* getMainWords(Song *mySong, charStringLink *allWords, Dic *myDic , Dic *banList) {
+	charString toDivide;
+	charString *CNString = NULL;
+	Node *p;
+	toDivide = mySong->title;
+	CNString = getCNString(&toDivide);
+	analyzeString(CNString, myDic, allWords, banList);
+	p = new Node(mySong->album);
+	allWords->addStringNode(p);
+	p = new Node(mySong->singer);
+	allWords->addStringNode(p);
+	p = new Node(mySong->composer);
+	allWords->addStringNode(p);
+	p = new Node(mySong->lyricist);
+	allWords->addStringNode(p);
+	return allWords;
+}
+
 charString *getCNString(charString *s) {
 	//除去非中文字符
 	int i = 0;
