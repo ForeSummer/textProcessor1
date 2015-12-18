@@ -144,40 +144,6 @@ Result BTree::searchBTree(charString key) {
 				p = p->ptr[pos];
 		}
 	}
-	/*while (!p->leaf) {
-		if (key < p->key[0]->term) {
-			p = p->ptr[0];
-		}
-		else if (key > p->key[p->keyNum - 1]->term) {
-			p = p->ptr[p->keyNum];
-		}
-		else if (key == p->key[p->keyNum - 1]->term) {
-			searchResult.isFounded = 1;
-			searchResult.pos = p->keyNum - 1;
-			searchResult.result = p;
-		}
-		else {
-			for (int i = 0; i < p->keyNum - 1; i++) {
-				if (key == p->key[i]->term) {
-					searchResult.isFounded = 1;
-					searchResult.pos = i;
-					searchResult.result = p;
-				}
-				if (key > p->key[i]->term && key < p->key[i + 1]->term) {
-					p = p->ptr[i + 1];
-				}
-			}
-		}
-	}
-	for (int i = 0; i < p->keyNum; i++) {
-		if (key == p->key[i]->term) {
-			searchResult.isFounded = 1;
-			searchResult.pos = i;
-			searchResult.result = p;
-			return searchResult;
-		}
-	}
-	return searchResult;*/
 }
 
 void BTree::printTree(string outputPath) {
@@ -229,7 +195,6 @@ void invertedFile::insertFile(string filePath) {
 	charString *line, *ID;
 	line = new charString(filePath);
 	*ID = line->subString(line->length - 8, 4);
-	cout << line->toString()<<endl;
 	docID = atoi(ID->line);
 	Result myResult;
 	word *myWord;
@@ -237,7 +202,6 @@ void invertedFile::insertFile(string filePath) {
 		getline(inFs,temp);
 		delete line;
 		line = new charString(temp);
-		//cout << temp<<endl;
 		myResult = this->myFile.searchBTree(*line);
 		if (myResult.isFounded) {
 			myWord = myResult.result->key[myResult.pos];
@@ -272,7 +236,6 @@ void invertedFile::buildFile(string path) {
 		temp = files[i];
 		if (temp[temp.length() - 1] == 't') {
 			this->insertFile(files[i]);
-			cout << temp<<endl;
 		}
 	}
 }
@@ -281,13 +244,196 @@ void invertedFile::saveFile(string filePath) {
 	this->myFile.printTree(filePath);
 }
 
-/*invertedFile::invertedFile(string filePath) {
-	//read tree from file
+void invertedFile::loadFile(string filePath) {
 	ifstream inFs(filePath, ios::in);
+	int startPos = 0, endPos = 0, number, count = 0;
 	string temp;
+	charString* line;
+	charString num;
+	word* myWord;
+	docNode* p, *pre = NULL, *info;
 	while (!inFs.eof()) {
-		getline(inFs,temp);
-		//get useful info
-		//insert
+		getline(inFs, temp);
+		//delete line;
+		line = new charString(temp);
+		for (int i = 0; i < line->length; i ++) {
+			if (line->line[i] == '{') {
+				startPos = i + 1;
+			}
+			else if (line->line[i] == '}' || line->line[i] == ',') {
+				endPos = i;
+				num = line->subString(startPos, endPos - startPos);
+				startPos = i + 1;
+				if (count == 0) {
+					myWord = new word();
+					myWord->term = num;
+					count ++;
+				}
+				else {
+					number = atoi(num.line);
+					if (count == 1) {
+						myWord->DF = number;
+						count ++;
+					}
+					else if (count == 2) {
+						myWord->occur = number;
+						count ++;
+					}
+					else {
+						if (count % 2 == 1) {
+							p = new docNode();
+							p->docID = number;
+							count ++;
+						}
+						else {
+							p->times = number;
+							if (pre == NULL) {
+								myWord->docInfo = p;
+							}
+							else {
+								pre->next = p;
+							}
+							pre = p;
+							count ++;
+						}
+					}
+				}
+			}
+		}
+		pre = NULL;
+		startPos = endPos = count = 0;
+		/*std::cout << '{' << myWord->term.toString() << ',' << myWord->DF << ',' << myWord->occur << '}';
+		info = myWord->docInfo;
+		while (info != NULL) {
+			std::cout << " {" << info->docID << ',' << info->times << '}';
+			info = info->next;
+		}
+		std::cout << endl;*/
+		this->myFile.insertBTree(myWord);
 	}
-}*/
+}
+
+
+void BTree::searchInfo(charString key) {
+	int startPos = 0, endPos = 0, wordNum = 0, flag = 0, count = 0, length = 0;
+	vector<record> result;
+	record* re;
+	Result info;
+	word* myWord;
+	docNode *p;
+	charString temp;
+	for (int i = 0; i < key.length; i ++) {
+		if (key.line[i] == ' ') {
+			wordNum ++;
+			endPos = i;
+			temp = key.subString(startPos, endPos - startPos);
+			info = this->searchBTree(temp);
+			if (info.isFounded) {
+				myWord = info.result->key[info.pos];
+				p = myWord->docInfo;
+				while (p != NULL) {
+					for (int i = 0; i < result.size(); i ++) {
+						if (p->docID == result[i].docID) {
+							result[i].fitNum ++;
+							result[i].times += p->times;
+							flag = 1;
+						}
+					}
+					if (flag == 0) {
+						re =new record();
+						re->docID = p->docID;
+						re->fitNum ++;
+						re->times = p->times;
+						result.push_back(*re);
+					}
+					flag = 0;
+					p = p->next;
+				}
+			}
+			startPos = i + 1;
+		}
+	}
+	wordNum ++;
+	endPos = key.length;
+	temp = key.subString(startPos, endPos - startPos);
+	info = this->searchBTree(temp);
+	if (info.isFounded) {
+		myWord = info.result->key[info.pos];
+		p = myWord->docInfo;
+		while (p != NULL) {
+			for (int i = 0; i < result.size(); i ++) {
+				if (p->docID == result[i].docID) {
+					result[i].fitNum ++;
+					result[i].times += p->times;
+					flag = 1;
+				}
+			}
+			if (flag == 0) {
+				re =new record();
+				re->docID = p->docID;
+				re->fitNum ++;
+				re->times = p->times;
+				result.push_back(*re);
+				delete re;
+			}
+			flag = 0;
+			p = p->next;
+		}
+	}
+	sort(result.begin(),result.end());
+	length = result.size();
+	if (length != 0) {
+		count = result[0].fitNum;
+		for (int i = length - 1; i >= 0; i --) {
+			if (result[i].fitNum != count) {
+				result.pop_back();
+			}
+			else {
+				break;
+			}
+		}
+	}
+	for (int i = 0; i < result.size(); i ++) {
+		std::cout << result[i].docID << "," << result[i].fitNum << "," << result[i].times << endl;
+	}
+}
+
+record::record() {
+	this->docID = -1;
+	this->fitNum = 0;
+	this->times = 0;
+}
+
+bool record::operator== (const record &s) const{
+	if (this->fitNum != s.fitNum) {
+		return false;
+	}
+	if (this->times != s.times) {
+		return false;
+	}
+	return true;
+}
+
+bool record::operator> (const record &s) const{
+	if (this->fitNum < s.fitNum) {
+		return true;
+	}
+	else if (this->fitNum == s.fitNum) {
+		if (this->times < s.times) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool record::operator< (const record &s) const{
+	if (this->fitNum > s.fitNum) {
+		return true;
+	}
+	else if (this->fitNum == s.fitNum) {
+		if (this->times > s.times) {
+			return true;
+		}
+	}
+	return false;
+}

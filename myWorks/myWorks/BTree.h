@@ -4,6 +4,7 @@
 #include "dic.h"
 #include <io.h>
 #include <vector>
+#include <utility>
 
 static const int M = 15;  
 static const int KEY_MAX = 2*M-1;
@@ -43,6 +44,7 @@ public:
 	Result searchBTree(charString key); 
 	void insertBTree(word* key);
 	void printTree(string outputPath);
+	void searchInfo(charString key);
 	BTree();
 	~BTree();
 private:
@@ -56,6 +58,19 @@ public:
 	void buildFile(string path);
 	void insertFile(string filePath);
 	void saveFile(string filePath);
+	void loadFile(string filePath);
+};
+
+class record
+{
+public:
+	int docID;
+	int times;
+	int fitNum;
+	record();
+	bool operator == (const record& s) const;
+	bool operator < (const record& s) const;
+	bool operator > (const record& s) const;
 };
 
 #endif
