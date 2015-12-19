@@ -8,11 +8,11 @@
 #include "divideWord.h"
 #include <utility>
 
-static const int M = 15;  
-static const int KEY_MAX = 2*M-1;
-static const int KEY_MIN = M-1;
-static const int CHILD_MAX = KEY_MAX+1;
-static const int CHILD_MIN = KEY_MIN+1;
+static const int M = 20;  
+static const int KEY_MAX = 2 * M - 1;
+static const int KEY_MIN = M - 1;
+static const int CHILD_MAX = KEY_MAX + 1;
+static const int CHILD_MIN = KEY_MIN + 1;
 
 
 
@@ -46,7 +46,7 @@ public:
 	Result searchBTree(charString key); 
 	void insertBTree(word* key);
 	void printTree(string outputPath);
-	void searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPath);
+	void searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPath, int status);
 	BTree();
 	~BTree();
 private:
@@ -58,10 +58,10 @@ class invertedFile
 public:
 	BTree myFile;
 	void buildFile(string path);
-	void buildMainFile(string path);
 	void insertFile(string filePath);
 	void saveFile(string filePath);
 	void loadFile(string filePath);
+	void getRelativeRank(int i, int* rank);
 };
 
 class record

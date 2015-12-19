@@ -74,6 +74,16 @@ Song extractMusicInfoFromPage(string filePath) {
 	}
 	inFs.close();
 	Song mySong = analyzeInfo(&info);
+	string matchX = "ги";
+	int pos;
+	pos = mySong.title.indexOf(matchX[0]);
+	if (pos != -1 && mySong.title.line[pos + 1] == matchX[1]) {
+		mySong.title =  mySong.title.subString(0, pos);
+	}
+	pos = mySong.title.indexOf('(');
+	if (pos != -1) {
+		mySong.title =  mySong.title.subString(0, pos);
+	}
 	return mySong;
 }
 

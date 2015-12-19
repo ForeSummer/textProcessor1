@@ -193,10 +193,10 @@ void invertedFile::insertFile(string filePath) {
 	ifstream inFs(filePath, ios::in);
 	int docID;
 	string temp;
-	charString *line, *ID;
+	charString *line, ID;
 	line = new charString(filePath);
-	*ID = line->subString(line->length - 8, 4);
-	docID = atoi(ID->line);
+	ID = line->subString(line->length - 8, 4);
+	docID = atoi(ID.line);
 	Result myResult;
 	word *myWord;
 	while (!inFs.eof()) {
@@ -237,27 +237,7 @@ void invertedFile::buildFile(string path) {
 		temp = files[i];
 		if (temp[temp.length() - 1] == 't') {
 			this->insertFile(files[i]);
-		}
-	}
-}
-
-void invertedFile::buildMainFile(string path) {
-	vector<string> files;
-	long hFile = 0;
-	struct _finddata_t fileinfo;
-	string p, temp;
-	if((hFile = _findfirst(p.assign(path).append("\\*").c_str(), &fileinfo)) != -1) {
-		do {
-			if(strcmp(fileinfo.name,".") != 0 && strcmp(fileinfo.name,"..") != 0){
-				files.push_back(p.assign(path).append("\\").append(fileinfo.name));
-			}
-		}while(_findnext(hFile, &fileinfo)  == 0);
-		_findclose(hFile);
-	}
-	for (int i = 0; i < files.size(); i++) {
-		temp = files[i];
-		if (temp[temp.length() - 1] == 'n') {
-			this->insertFile(files[i]);
+			//cout << temp << endl;
 		}
 	}
 }
@@ -328,8 +308,73 @@ void invertedFile::loadFile(string filePath) {
 	}
 }
 
+void invertedFile::getRelativeRank(int i, int* rank) {
+	queue<BTNode*> myQueue;
+	word *myWord;
+	docNode *info;
+	myQueue.push(this->myFile.root);
+	int existFlag = 0;
+	int times = 0;
+	BTNode* p;
+	while (!myQueue.empty()) {
+		p = myQueue.front();
+		if (p->leaf) {
+			for (int i = 0; i < p->keyNum; i ++) {
+				myWord = p->key[i];
+				info = myWord->docInfo;
+				while (info != NULL) {
+					if (info->docID == i) {
+						existFlag = 1;
+						times = info->times;
+						break;
+					}
+					info = info->next;
+				}
+				info = myWord->docInfo;
+				if (existFlag) {
+					while (info != NULL) {
+						if (info->docID != i) {
+							rank[info->docID - 1] += times * info->times;
+						}
+						info = info->next;
+					}
+				}
+				existFlag = 0;
+			}
+			myQueue.pop();
+		}
+		else {
+			for (int i = 0; i < p->keyNum; i ++) {
+				myWord = p->key[i];
+				info = myWord->docInfo;
+				while (info != NULL) {
+					if (info->docID == i) {
+						existFlag = 1;
+						times = info->times;
+						break;
+					}
+					info = info->next;
+				}
+				info = myWord->docInfo;
+				if (existFlag) {
+					while (info != NULL) {
+						if (info->docID != i) {
+							rank[info->docID - 1] += times * info->times;
+						}
+						info = info->next;
+					}
+				}
+				existFlag = 0;
+			}
+			for (int i = 0; i <= p->keyNum; i ++) {
+				myQueue.push(p->ptr[i]);
+			}
+			myQueue.pop();
+		}
+	}
+}
 
-void BTree::searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPath) {
+void BTree::searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPath, int status) {
 	int startPos = 0, endPos = 0, flag = 0, count = 0, length = 0;
 	vector<record> result;
 	record* re;
@@ -396,10 +441,29 @@ void BTree::searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPa
 			}
 		}
 	}
-	for (int i = 0; i < result.size(); i ++) {
-		outFs << "(" <<result[i].docID << "," << result[i].times << ") ";
+	if (status == 0) {
+		for (int i = 0; i < result.size(); i ++) {
+			outFs << "(" <<result[i].docID << "," << result[i].times << ") ";
+		}
+		if(result.size() == 0) {
+			outFs << "未找到相关歌曲" << endl;
+		}
+		else {
+			outFs << endl;
+		}
 	}
-	outFs << endl;
+	else {
+		for (int i = 0; i < result.size(); i ++) {
+			cout << "(" <<result[i].docID << "," << result[i].times << ") ";
+		}
+		if(result.size() == 0) {
+			cout << "未找到相关歌曲" << endl;
+		}
+		else {
+			cout << endl;
+		}
+	}
+	outFs.close();
 }
 
 record::record() {

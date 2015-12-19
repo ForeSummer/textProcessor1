@@ -41,12 +41,40 @@ void word::addNewInfo(int docID) {
 	while (p->next != NULL) {
 		if (p->docID == docID) {
 			p->times ++;
+			int tempID, tempTimes;
+			p = this->docInfo;
+			while (p->next != NULL) {
+				q = p->next;
+				if (q->times >p->times) {
+					tempTimes = q->times;
+					tempID = q->docID;
+					q->times = p->times;
+					q->docID = p->docID;
+					p->times = tempTimes;
+					p->docID = tempID;
+				}
+				p = p->next;
+			}
 			return;
 		}
 		p = p->next;
 	}
 	if (p->docID == docID) {
 		p->times ++;
+		int tempID, tempTimes;
+		p = this->docInfo;
+		while (p->next != NULL) {
+			q = p->next;
+			if (q->times >p->times) {
+				tempTimes = q->times;
+				tempID = q->docID;
+				q->times = p->times;
+				q->docID = p->docID;
+				p->times = tempTimes;
+				p->docID = tempID;
+			}
+			p = p->next;
+		}
 		return;
 	}
 	q = new docNode();
@@ -54,6 +82,32 @@ void word::addNewInfo(int docID) {
 	q->times ++;
 	p->next = q;
 	this->DF ++;
+
+	//rank
+	
 	return;
 }
 
+int word::fingInfo(int docID) {
+	docNode *p;
+	p = this->docInfo;
+	while (p != NULL) {
+		if (p->docID == docID) {
+			return p->times;
+		}
+		p = p->next;
+	}
+	return -1;
+}
+
+void word::modifyInfo(int docID, int times) {
+	docNode *p;
+	p = this->docInfo;
+	while (p != NULL) {
+		if (p->docID == docID) {
+			p->times = times;
+		}
+		p = p->next;
+	}
+	return;
+}

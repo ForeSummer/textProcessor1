@@ -25,6 +25,8 @@ public:
 	word();
 	~word();
 	void addNewInfo(int docID);
+	int fingInfo(int docID);
+	void modifyInfo(int docID, int times);
 };
 
 #endif // !DIC_H
