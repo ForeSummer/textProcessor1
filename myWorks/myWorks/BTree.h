@@ -8,6 +8,7 @@
 #include "divideWord.h"
 #include <utility>
 
+//B树的相关设置
 static const int M = 20;  
 static const int KEY_MAX = 2 * M - 1;
 static const int KEY_MIN = M - 1;
@@ -53,6 +54,7 @@ private:
 
 };
 
+//倒排文档相关定义
 class invertedFile
 {
 public:

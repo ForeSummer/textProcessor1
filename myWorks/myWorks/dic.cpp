@@ -27,7 +27,7 @@ docNode::docNode() {
 	this->next = NULL;
 }
 
-
+//加入信息同时更新链表并排序
 void word::addNewInfo(int docID) {
 	docNode *p, *q;
 	p = this->docInfo;

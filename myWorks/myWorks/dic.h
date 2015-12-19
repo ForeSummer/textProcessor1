@@ -5,6 +5,7 @@
 #include <iostream>
 using namespace std;
 
+//Á´±í½Úµã
 class docNode
 {
 public:

@@ -56,6 +56,7 @@ Result::Result(BTNode *result, int pos, int isFounded) {
 	this->isFounded = isFounded;
 }
 
+//普通插入
 void BTNode::normalInsert(word* key) {
 	BTNode *p;
 	int i = this->keyNum;
@@ -82,6 +83,7 @@ void BTNode::normalInsert(word* key) {
 	}
 }
 
+//分裂节点
 void BTNode::splitNode(int index) {
 	BTNode *p = new BTNode();
 	p->leaf = this->leaf;
@@ -104,6 +106,7 @@ void BTNode::splitNode(int index) {
 	this->parent->key[index] = this->key[KEY_MIN];
 }
 
+//向B树中插入节点
 void BTree::insertBTree(word* key) {
 	BTNode *p;
 	if (this->root == NULL) {
@@ -120,6 +123,7 @@ void BTree::insertBTree(word* key) {
 	root->normalInsert(key);
 }
 
+//查找
 Result BTree::searchBTree(charString key) {
 	Result searchResult(NULL, 0, 0);
 	BTNode *p;
@@ -147,6 +151,7 @@ Result BTree::searchBTree(charString key) {
 	}
 }
 
+//输出B树
 void BTree::printTree(string outputPath) {
 	ofstream outFs(outputPath, ios::out);
 	queue<BTNode*> myQueue;
@@ -188,7 +193,7 @@ void BTree::printTree(string outputPath) {
 	}
 }
 
-
+//将一个文件中的分词存入B树
 void invertedFile::insertFile(string filePath) {
 	ifstream inFs(filePath, ios::in);
 	int docID;
@@ -220,6 +225,7 @@ void invertedFile::insertFile(string filePath) {
 	delete line;
 }
 
+//找到所有分词结果
 void invertedFile::buildFile(string path) {
 	vector<string> files;
 	long hFile = 0;
@@ -242,10 +248,12 @@ void invertedFile::buildFile(string path) {
 	}
 }
 
+//输出B树到文档中
 void invertedFile::saveFile(string filePath) {
 	this->myFile.printTree(filePath);
 }
 
+//从文档中加载B树
 void invertedFile::loadFile(string filePath) {
 	ifstream inFs(filePath, ios::in);
 	int startPos = 0, endPos = 0, number, count = 0;
@@ -308,7 +316,8 @@ void invertedFile::loadFile(string filePath) {
 	}
 }
 
-void invertedFile::getRelativeRank(int i, int* rank) {
+//计算相关度
+void invertedFile::getRelativeRank(int pos, int* rank) {
 	queue<BTNode*> myQueue;
 	word *myWord;
 	docNode *info;
@@ -323,7 +332,7 @@ void invertedFile::getRelativeRank(int i, int* rank) {
 				myWord = p->key[i];
 				info = myWord->docInfo;
 				while (info != NULL) {
-					if (info->docID == i) {
+					if (info->docID == pos) {
 						existFlag = 1;
 						times = info->times;
 						break;
@@ -333,7 +342,7 @@ void invertedFile::getRelativeRank(int i, int* rank) {
 				info = myWord->docInfo;
 				if (existFlag) {
 					while (info != NULL) {
-						if (info->docID != i) {
+						if (info->docID != pos) {
 							rank[info->docID - 1] += times * info->times;
 						}
 						info = info->next;
@@ -348,7 +357,7 @@ void invertedFile::getRelativeRank(int i, int* rank) {
 				myWord = p->key[i];
 				info = myWord->docInfo;
 				while (info != NULL) {
-					if (info->docID == i) {
+					if (info->docID == pos) {
 						existFlag = 1;
 						times = info->times;
 						break;
@@ -358,7 +367,7 @@ void invertedFile::getRelativeRank(int i, int* rank) {
 				info = myWord->docInfo;
 				if (existFlag) {
 					while (info != NULL) {
-						if (info->docID != i) {
+						if (info->docID != pos) {
 							rank[info->docID - 1] += times * info->times;
 						}
 						info = info->next;
@@ -374,6 +383,7 @@ void invertedFile::getRelativeRank(int i, int* rank) {
 	}
 }
 
+//对关键词分词并搜索 0-输出到文件中 1-输出到控制台
 void BTree::searchInfo(charString key, Dic *myDic, Dic *banlist, string outputPath, int status) {
 	int startPos = 0, endPos = 0, flag = 0, count = 0, length = 0;
 	vector<record> result;
